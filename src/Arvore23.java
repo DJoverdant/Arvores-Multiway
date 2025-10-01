@@ -76,6 +76,11 @@ public class Arvore23 {
                 i = 2;
             }
 
+            // cria o filho se for null
+            if (no.filhos[i] == null) {
+                no.filhos[i] = new No23();
+            }
+
             if (estaCheio(no.filhos[i])) {
                 dividirFilho(no, i, no.filhos[i]);
                 if (chave > no.chaves[i]) i++;
@@ -110,6 +115,7 @@ public class Arvore23 {
     }
 
     private boolean estaCheio(No23 no) {
+        if (no == null) return false;
         return no.chaves[0] != 0 && no.chaves[1] != 0;
     }
 
@@ -117,7 +123,6 @@ public class Arvore23 {
     public void remover(int chave) {
         removerRec(raiz, chave);
 
-        // se a raiz ficar vazia e tiver filhos
         if (!raiz.folha && raiz.chaves[0] == 0 && raiz.chaves[1] == 0) {
             raiz = raiz.filhos[0];
         }
@@ -127,7 +132,6 @@ public class Arvore23 {
         if (no == null) return;
 
         if (no.folha) {
-            // remover diretamente do nó folha
             if (no.chaves[0] == chave) {
                 no.chaves[0] = no.chaves[1];
                 no.chaves[1] = 0;
@@ -137,22 +141,21 @@ public class Arvore23 {
             return;
         }
 
-        // se chave está no nó interno
         if (no.chaves[0] == chave || no.chaves[1] == chave) {
             int idx = (no.chaves[0] == chave) ? 0 : 1;
             No23 filhoDireito = no.filhos[idx + 1];
 
-            // pega sucessor
-            while (!filhoDireito.folha) {
+            while (filhoDireito != null && !filhoDireito.folha) {
                 filhoDireito = filhoDireito.filhos[0];
             }
-            int sucessor = filhoDireito.chaves[0];
-            no.chaves[idx] = sucessor;
-            removerRec(no.filhos[idx + 1], sucessor);
+            if (filhoDireito != null) {
+                int sucessor = filhoDireito.chaves[0];
+                no.chaves[idx] = sucessor;
+                removerRec(no.filhos[idx + 1], sucessor);
+            }
             return;
         }
 
-        // se a chave não está no nó, procura no filho correto
         int i;
         if (chave < no.chaves[0]) {
             i = 0;
@@ -162,29 +165,9 @@ public class Arvore23 {
             i = 2;
         }
 
+        if (no.filhos[i] == null) return;
+
         removerRec(no.filhos[i], chave);
-
-        // rebalanceamento simplificado: se o filho ficou vazio
-        if (no.filhos[i] != null && no.filhos[i].chaves[0] == 0 && no.filhos[i].chaves[1] == 0) {
-            fundir(no, i);
-        }
-    }
-
-    private void fundir(No23 pai, int i) {
-        No23 filho = pai.filhos[i];
-        No23 irmao;
-
-        if (i > 0) {
-            irmao = pai.filhos[i - 1];
-            irmao.chaves[1] = pai.chaves[i - 1];
-            pai.chaves[i - 1] = 0;
-            pai.filhos[i] = null;
-        } else {
-            irmao = pai.filhos[i + 1];
-            irmao.chaves[1] = pai.chaves[i];
-            pai.chaves[i] = 0;
-            pai.filhos[i] = null;
-        }
     }
 
     // ===== EXIBIR ÁRVORE =====

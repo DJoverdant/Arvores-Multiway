@@ -32,7 +32,7 @@ class Arvore23 {
         raiz = new No23();
     }
 
-    // INSERÇÃO ==========================================================
+    // INSERÇÃO ======================
     public void inserir(int chave) {
         No23 r = raiz;
         if (r.cheio()) {
@@ -75,7 +75,6 @@ class Arvore23 {
         }
     }
 
-    // CORRIGIDO: dividirFilho ============================================
     private void dividirFilho(No23 pai, int i, No23 filho) {
         No23 z = new No23();
         z.folha = filho.folha;
@@ -83,10 +82,7 @@ class Arvore23 {
         int chaveEsquerda = filho.chaves[0];
         int chaveDireita = filho.chaves[1];
 
-        // chave promovida será a da esquerda (convencional em 2-3)
         int chavePromovida = chaveEsquerda;
-
-        // Z recebe a chave da direita
         z.chaves[0] = chaveDireita;
 
         // Se não for folha, move os filhos
@@ -95,7 +91,7 @@ class Arvore23 {
             z.filhos[1] = filho.filhos[2];
         }
 
-        // limpa o filho (fica apenas com a chave promovida removida)
+        // limpa o filho 
         filho.chaves[0] = 0;
         filho.chaves[1] = 0;
         filho.filhos[1] = null;
@@ -116,7 +112,7 @@ class Arvore23 {
         pai.folha = false; // agora o pai tem filhos
     }
 
-    // IMPRESSÃO =========================================================
+    // IMPRESSÃO ====================
     public void imprimir(No23 x, String espaco) {
         if (x == null) return;
         System.out.println(espaco + "[" + (x.chaves[0] == 0 ? "" : x.chaves[0]) +
@@ -126,7 +122,7 @@ class Arvore23 {
         }
     }
 
-    // REMOÇÃO (versão simples – pode ser expandida) =====================
+    // REMOÇÃO =====================
     public void remover(int chave) {
         raiz = removerRecursivo(raiz, chave);
     }
@@ -134,14 +130,12 @@ class Arvore23 {
     private No23 removerRecursivo(No23 x, int chave) {
         if (x == null) return null;
 
-        // caso folha
         if (x.folha) {
             if (x.chaves[0] == chave) x.chaves[0] = x.chaves[1];
             if (x.chaves[1] == chave) x.chaves[1] = 0;
             return x;
         }
 
-        // caso interno (versão simplificada)
         for (int i = 0; i < x.numChaves(); i++) {
             if (x.chaves[i] == chave) {
                 x.chaves[i] = 0;

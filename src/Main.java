@@ -112,6 +112,27 @@ class Arvore23 {
         pai.folha = false; // agora o pai tem filhos
     }
 
+    // =================== BUSCA ======================
+    public boolean buscar(int chave) {
+        return buscarRecursivo(raiz, chave);
+    }
+
+    private boolean buscarRecursivo(No23 x, int chave) {
+        if (x == null) return false;
+
+        for (int i = 0; i < x.numChaves(); i++) {
+            if (x.chaves[i] == chave) return true;
+        }
+
+        if (x.folha) return false;
+
+        if (chave < x.chaves[0]) return buscarRecursivo(x.filhos[0], chave);
+        else if (x.numChaves() == 1 || (x.numChaves() == 2 && chave < x.chaves[1]))
+            return buscarRecursivo(x.filhos[1], chave);
+        else
+            return buscarRecursivo(x.filhos[2], chave);
+    }
+
     // IMPRESSÃO ====================
     public void imprimir(No23 x, String espaco) {
         if (x == null) return;
@@ -157,9 +178,15 @@ public class Main {
         arvore.inserir(20);
         arvore.inserir(5);
         arvore.inserir(6);
+        arvore.inserir(4);
        
         System.out.println("Árvore após inserções:");
         arvore.imprimir(arvore.raiz, "");
+
+        //teste de buscapé
+        System.out.println("\nBuscar 6: " + arvore.buscar(6));
+        System.out.println("Buscar 17: " + arvore.buscar(17));
+
 
         // Remoções
         arvore.remover(6);
